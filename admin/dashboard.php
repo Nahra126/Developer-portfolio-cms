@@ -17,6 +17,8 @@ if(!isset($_SESSION['user_id'])){
 <body>
     <h2>Welcome <?php echo $_SESSION['username'];  ?></h2>
     <p>Login Successful 🎉</p>
+    <a href="profile.php">Profile Management</a>
+    <br><br>
     <a href="logout.php"><button>Logout</button></a>
 </body>
 </html>
