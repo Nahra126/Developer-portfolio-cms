@@ -56,7 +56,9 @@ exit();
     <label>Skill Percentage</label><br>
     <input type="number"  class="form-control" name="skill_percentage" min="0" max="100" required><br><br>
 
-    <button type="submit" class="btn btn-success" name="add_skill">Add Skill</button>
+            <button type="submit" class="btn btn-success" name="add_skill">
+            Add Skills
+        </button>
 
 </form>
 

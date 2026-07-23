@@ -20,7 +20,7 @@
             </li>
 
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">Education</a>
+                <a href="education.php" class="nav-link text-white">Education</a>
             </li>
 
             <li class="nav-item mb-2">
