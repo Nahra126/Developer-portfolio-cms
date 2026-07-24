@@ -24,7 +24,7 @@
             </li>
 
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">Experience</a>
+                <a href="experience.php" class="nav-link text-white">Experience</a>
             </li>
 
             <li class="nav-item mb-2">
