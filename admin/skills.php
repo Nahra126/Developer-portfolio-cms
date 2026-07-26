@@ -44,23 +44,47 @@ exit();
 
 ?>
 
-<div class="container-fluid p-4">
+<div class="container mt-4">
+
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Education Management</h4>
+    </div>
+
+    <div class="card-body">
 
     <h2>Skills Management</h2>
 
     <form action="" method="POST">
 
-    <label>Skill Name</label><br>
-    <input type="text" class="form-control" name="skill_name"><br><br>
+    <div class="row">
 
-    <label>Skill Percentage</label><br>
-    <input type="number"  class="form-control" name="skill_percentage" min="0" max="100" required><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Skill Name</label>
+        <input type="text"
+               name="skill_name"
+               class="form-control">
+    </div>
 
-            <button type="submit" class="btn btn-success" name="add_skill">
-            Add Skills
-        </button>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Skill Percentage</label>
+        <input type="text"
+               name="skill_percentage"
+               class="form-control">
+    </div>
+
+</div>
+           <button class="btn btn-success" name="add_education">
+
+           <i class="bi bi-plus-circle"></i>
+            Add Education
+
+           </button>
 
 </form>
+
+ </div>
+</div>
 
 <?php
 
@@ -68,43 +92,61 @@ $sql = "SELECT * FROM skills";
 $result = mysqli_query($conn, $sql);
 
 ?>
+<div class="card shadow mt-4">
 
-<table class="table table-bordered table-hover" border="1" cellpadding="10">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Skills Records</h4>
+    </div>
 
-    <tr>
-        <th>ID</th>
-        <th>Skill Name</th>
-        <th>Percentage</th>
-        <th>Action</th>
-    </tr>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle" border="1" cellpadding="10">
 
-    <?php while($row = mysqli_fetch_assoc($result)){ ?>
+                        <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Skill Name</th>
+                            <th>Percentage</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
 
-    <tr>
+                        <?php while($row = mysqli_fetch_assoc($result)){ ?>
 
-        <td><?php echo $row['id']; ?></td>
+                        <tr>
 
-        <td><?php echo $row['skill_name']; ?></td>
+                            <td><?php echo $row['id']; ?></td>
 
-        <td><?php echo $row['skill_percentage']; ?>%</td>
+                            <td><?php echo $row['skill_name']; ?></td>
 
-        <td>
-            <a href="edit-skill.php?id=<?php echo $row['id']; ?>">Edit</a> |
-           <a href="skills.php?delete=<?php echo $row['id']; ?>"
-   onclick="return confirm('Are you sure you want to delete this skill?')">
-    Delete
-</a>
-        </td>
+                            <td><?php echo $row['skill_percentage']; ?>%</td>
 
-    </tr>
+                            <td>
+                            <a href="edit-skill.php?id=<?php echo $row['id']; ?>"
+                                class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
 
-    <?php } ?>
+                                <a href="skills.php?delete=<?php echo $row['id']; ?>"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to delete this record?')">
+                                <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </td>
 
-</table>
+                        </tr>
 
-<hr>
+                        <?php } ?>
+
+                    </table>
+                </div>
+            </div>
 
 </div>
+
+    
+
+
 
 <?php
 

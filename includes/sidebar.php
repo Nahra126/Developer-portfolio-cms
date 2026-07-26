@@ -28,7 +28,7 @@
             </li>
 
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">Projects</a>
+                <a href="project.php" class="nav-link text-white">Projects</a>
             </li>
 
             <li class="nav-item mb-2">

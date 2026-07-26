@@ -64,81 +64,137 @@ exit();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Education Management</title>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
 <div class="container mt-4">   
 
-<h2>Education Management</h2>
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Education Management</h4>
+    </div>
+
+    <div class="card-body">
 
     <form action="" method="POST" >
 
-    <label>Degree</label>
-    <input type="text" class="form-control" name="degree" required ><br><br>
+    <div class="row">
 
-    <label>Institute</label>
-    <input type="text" class="form-control" name="institute" required><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Degree</label>
+        <input type="text"
+               name="degree"
+               class="form-control">
+    </div>
 
-    <label>Start Year</label>
-    <input type="number" class="form-control" name="start_year" min="1900"
-       max="2100" required><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Institute</label>
+        <input type="text"
+               name="institute"
+               class="form-control">
+    </div>
 
-    <label>End Year</label>
-    <input type="number" class="form-control" name="end_year" min="1900"
-       max="2100" required><br><br>
+</div>
+
+    <div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Start Year</label>
+        <input type="number"
+               name="start_year"
+               class="form-control">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">End Year</label>
+        <input type="number"
+               name="end_year"
+               class="form-control">
+    </div>
+
+</div>
 
     <label>Description</label><br>
     <textarea name="descripton" class="form-control" rows="5" cols="40"  required></textarea><br><br>
 
-    <button type="submit" class="btn btn-success" name="add_education">
+    <button class="btn btn-success" name="add_education">
+
+           <i class="bi bi-plus-circle"></i>
             Add Education
-        </button>
+
+    </button>
 
     </form>
+
+      </div>
+</div>
     <?php
 
 $sql = "SELECT * FROM education";
 $result = mysqli_query($conn, $sql);
 
 ?>
+<div class="card shadow mt-4">
 
-<table class="table table-bordered table-hover" border="1" cellpadding="10">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Education Records</h4>
+    </div>
 
-    <tr>
-        <th>id</th>
-        <th>Degree</th>
-        <th>Institute</th>
-        <th>Start_year</th>
-        <th>End_year</th>
-        <th>Description</th>
-        <th>Action</th>
-    </tr>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle" border="1" cellpadding="10">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>id</th>
+                        <th>Degree</th>
+                        <th>Institute</th>
+                        <th>Start_year</th>
+                        <th>End_year</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
 
-    <?php while($row = mysqli_fetch_assoc($result)){ ?>
+                    <?php while($row = mysqli_fetch_assoc($result)){ ?>
 
-    <tr>
-        <td><?php echo $row['id']; ?></td>
+                    <tr>
+                        <td><?php echo $row['id']; ?></td>
 
-        <td><?php echo $row['degree']; ?></td>
+                        <td><?php echo $row['degree']; ?></td>
 
-        <td><?php echo $row['institute']; ?></td>
+                        <td><?php echo $row['institute']; ?></td>
 
-        <td><?php echo $row['start_year']; ?></td>
+                        <td><?php echo $row['start_year']; ?></td>
 
-        <td><?php echo $row['end_year']; ?></td>
+                        <td><?php echo $row['end_year']; ?></td>
 
-        <td><?php echo $row['descripton']; ?></td>
-        
+                        <td><?php echo $row['descripton']; ?></td>
+                        
 
-        <td>
-            <a href="edit-education.php?id=<?php echo $row['id']; ?>">Edit</a> |
-           <a href="education.php?delete=<?php echo $row['id']; ?>"
-   onclick="return confirm('Are you sure you want to delete this education record?')">
-    Delete
-</a>
-        </td>
+                        <td>
+                        
+                        <a href="edit-education.php?id=<?php echo $row['id']; ?>"
+                            class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
 
-    </tr>
+                            <a href="education.php?delete=<?php echo $row['id']; ?>"
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this record?')">
+                            <i class="bi bi-trash"></i> Delete
+                            </a>
+                
+                        </td>
+
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+</div>
 
     <?php } ?>
 

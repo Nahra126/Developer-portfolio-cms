@@ -65,82 +65,133 @@ exit();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
 </head>
 <body>
 <div class="container mt-4">   
 
-<h2>Experience Management</h2>
+ <div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Experience Management</h4>
+    </div>
+
+    <div class="card-body">
 
     <form action="" method="POST" >
 
-    <label>Job Title</label>
-    <input type="text" class="form-control" name="job_title" required ><br><br>
+    <div class="row">
 
-    <label>Company</label>
-    <input type="text" class="form-control" name="company" required><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Job Title</label>
+        <input type="text"
+               name="job_title"
+               class="form-control">
+    </div>
 
-    <label>Start Year</label>
-    <input type="number" class="form-control" name="start_year" min="1900"
-       max="2100" required><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Company</label>
+        <input type="text"
+               name="company"
+               class="form-control">
+    </div>
 
-    <label>End Year</label>
-    <input type="number" class="form-control" name="end_year" min="1900"
-       max="2100" required><br><br>
+</div>
+
+    <div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Start Year</label>
+        <input type="number"
+               name="start_year"
+               class="form-control">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">End Year</label>
+        <input type="number"
+               name="end_year"
+               class="form-control">
+    </div>
+
+</div>
 
     <label>Description</label><br>
     <textarea name="description" class="form-control" rows="5" cols="40"  required></textarea><br><br>
 
-    <button type="submit" class="btn btn-success" name="add_experience">
-            Add Experience
-        </button>
+    <button class="btn btn-success mb-3">
+
+            <i class="bi bi-plus-circle"></i>
+
+             Add Experience
+
+    </button>
 
     </form>
+
+       </div>
+</div>
+
     <?php
 
 $sql = "SELECT * FROM experience";
 $result = mysqli_query($conn, $sql);
 
 ?>
+<div class="card shadow mt-4">
 
-<table class="table table-bordered table-hover" border="1" cellpadding="10">
+    <div class="card-header bg-dark text-white">
+        <h4 class="mb-0">Experience Records</h4>
+    </div>
 
-    <tr>
-        <th>id</th>
-        <th>Job Title</th>
-        <th>Company</th>
-        <th>Start_year</th>
-        <th>End_year</th>
-        <th>Description</th>
-        <th>Action</th>
-    </tr>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle" >
+  
+                    <thead class="table-dark">
+                    <tr>
+                        <th>id</th>
+                        <th>Job Title</th>
+                        <th>Company</th>
+                        <th>Start_year</th>
+                        <th>End_year</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
 
-    <?php while($row = mysqli_fetch_assoc($result)){ ?>
+                    <?php while($row = mysqli_fetch_assoc($result)){ ?>
 
-    <tr>
-        <td><?php echo $row['id']; ?></td>
+                <tr>
+                    <td><?php echo $row['id']; ?></td>
+                    <td><?php echo $row['job_title']; ?></td>
+                    <td><?php echo $row['company']; ?></td>
+                    <td><?php echo $row['start_year']; ?></td>
+                    <td><?php echo $row['end_year']; ?></td>
+                    <td><?php echo $row['description']; ?></td>
 
-        <td><?php echo $row['job_title']; ?></td>
+                    <td>
+                        <a href="edit-experience.php?id=<?php echo $row['id']; ?>"
+                        class="btn btn-warning btn-sm">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
 
-        <td><?php echo $row['company']; ?></td>
+                        <a href="experience.php?delete=<?php echo $row['id']; ?>"
+                        class="btn btn-danger btn-sm"
+                        onclick="return confirm('Are you sure you want to delete this record?')">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
 
-        <td><?php echo $row['start_year']; ?></td>
+                <?php } ?>
 
-        <td><?php echo $row['end_year']; ?></td>
+            </table>
+        </div>
+    </div>
 
-        <td><?php echo $row['description']; ?></td>
-        
-
-        <td>
-            <a href="edit-experience.php?id=<?php echo $row['id']; ?>">Edit</a> |
-           <a href="experience.php?delete=<?php echo $row['id']; ?>"
-   onclick="return confirm('Are you sure you want to delete this experience record?')">
-    Delete
-</a>
-        </td>
-
-    </tr>
-
-    <?php } ?>
+</div>
 
     <?php
     include "../includes/footer.php";

@@ -90,48 +90,136 @@ if(!isset($_SESSION['user_id'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile_Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-<body>
-    <h2>Profile_Management</h2>
+<body class="bg-light">
+   
+<div class="container mt-5">
 
-    <img src="../uploads/profile/<?php echo $profile['profile_image']; ?>" width="150" alt="">
+<div class="card shadow">
+
+<div class="card-header bg-dark text-white">
+<h2 class="mb-0">Profile Management</h2>
+</div>
+
+<div class="card-body">
+
+    <div class="text-center mb-4">
+
+<img
+src="../uploads/profile/<?php echo $profile['profile_image']; ?>"
+class="rounded-circle border shadow"
+width="180"
+height="180"
+style="object-fit:cover;">
+
+</div>
 
     
-<form action="" method="POST"  enctype="multipart/form-data">
-    <label>Full Name</label><br>
-    <input type="text" name="full_name" value="<?php echo $profile['full_name'] ?>"><br><br>
+    <form action="" method="POST"  enctype="multipart/form-data">
+       <div class="row">
 
-    <label>Professional Title</label><br>
-    <input type="text" name="title" value="<?php echo $profile['title'] ?>" ><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Full Name</label>
+        <input type="text"
+               name="full_name"
+               class="form-control"
+               value="<?php echo $profile['full_name']; ?>">
+    </div>
 
-    <label>About</label><br>
-    <textarea name="about" rows="5" cols="40"  ><?php echo $profile['about']; ?></textarea><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Professional Title</label>
+        <input type="text"
+               name="title"
+               class="form-control"
+               value="<?php echo $profile['title']; ?>">
+    </div>
 
-    <label>Email</label><br>
-    <input type="email" name="email" value="<?php echo $profile['email'] ?>" ><br><br>
+</div>
 
-    <label>Phone</label><br>
-    <input type="text" name="phone" value="<?php echo $profile['phone'] ?>"  ><br><br>
+        <label>About</label><br>
+        <textarea name="about" class="form-control" rows="5" cols="40"  ><?php echo $profile['about']; ?></textarea><br><br>
 
-    <label>Address</label><br>
-    <input type="text" name="address" value="<?php echo $profile['address'] ?>" ><br><br>
+        <div class="row">
 
-    <label>GitHub</label><br>
-    <input type="text" name="github" value="<?php echo $profile['github'] ?>" ><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Email</label>
+        <input type="email"
+               name="email"
+               class="form-control"
+               value="<?php echo $profile['email']; ?>">
+    </div>
 
-    <label>LinkedIn</label><br>
-    <input type="text" name="linkedin" value="<?php echo $profile['linkedin'] ?>"  ><br><br>
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Phone</label>
+        <input type="text"
+               name="phone"
+               class="form-control"
+               value="<?php echo $profile['phone']; ?>">
+    </div>
 
-    <label>Profile Image</label><br>
-    <input type="file" name="profile_image"><br><br>
+</div>
 
-    <label>Resume (PDF)</label><br>
-    <input type="file" name="resume"><br><br>
+        <label>Address</label><br>
+        <input type="text" name="address" class="form-control" value="<?php echo $profile['address'] ?>" ><br><br>
 
-    <button type="submit" name="save_profile" >Save Profile</button>
+       <div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">GitHub</label>
+        <input type="text"
+               name="github"
+               class="form-control"
+               value="<?php echo $profile['github']; ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">LinkedIn</label>
+        <input type="text"
+               name="linkedin"
+               class="form-control"
+               value="<?php echo $profile['linkedin']; ?>">
+    </div>
+
+</div>
+
+       <div class="row">
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Profile Image</label>
+        <input type="file"
+               name="profile_image"
+               class="form-control">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Resume (PDF)</label>
+        <input type="file"
+               name="resume"
+               class="form-control">
+    </div>
+
+</div>
+
+        <button
+                type="submit"
+                name="save_profile"
+                class="btn btn-success w-100 fw-bold">
+
+                <i class="bi bi-check-circle-fill"></i>
+                Save Profile
+
+        </button>
 
 
-</form>
+    </form>
+
+    </div>
+
+</div>
+
+</div>
 
 
 </body>
