@@ -1,5 +1,6 @@
 <?php
 
+
 require_once "../includes/auth.php";
 require_once "../includes/db.php";
 
@@ -11,45 +12,73 @@ include "../includes/sidebar.php";
 
 
 if(isset($_POST['add_experience'])){
+
     $job_title = trim($_POST['job_title']);
     $company = trim($_POST['company']);
     $start_year = trim($_POST['start_year']);
     $end_year = trim($_POST['end_year']);
     $description = trim($_POST['description']);
 
+    $stmt = mysqli_prepare(
+        $conn,
+        "INSERT INTO experience
+        (job_title, company, start_year, end_year, description)
+        VALUES (?, ?, ?, ?, ?)"
+    );
 
-    $sql = "INSERT INTO experience (job_title,company,start_year,end_year,description)
-             VALUES ('$job_title','$company','$start_year','$end_year','$description')";
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sssss",
+        $job_title,
+        $company,
+        $start_year,
+        $end_year,
+        $description
+    );
 
+    if(mysqli_stmt_execute($stmt)){
 
+        mysqli_stmt_close($stmt);
 
-
-
-    if(mysqli_query($conn, $sql)){
-        header("location:experience.php");
+        header("Location: experience.php");
         exit();
+
     }else{
-        echo "Error" . mysqli_error($conn);
+
+        echo "Error: " . mysqli_stmt_error($stmt);
+
     }
 
-
+    
 }
 
 
 if(isset($_GET['delete'])){
 
-    $id = $_GET['delete'];
+    $id = (int) $_GET['delete'];
 
-    $sql = "DELETE FROM experience WHERE id = '$id'";
+    $stmt = mysqli_prepare(
+        $conn,
+        "DELETE FROM experience WHERE id = ?"
+    );
 
-    if(mysqli_query($conn, $sql)){
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+    if(mysqli_stmt_execute($stmt)){
+
+        mysqli_stmt_close($stmt);
+
         header("Location: experience.php");
-exit();
+        exit();
+
     }else{
-        echo "Error: " . mysqli_error($conn);
+
+        echo "Error: " . mysqli_stmt_error($stmt);
+
     }
 
 }
+
 
 
 
@@ -68,7 +97,7 @@ exit();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
-</head>
+
 <body>
 <div class="container mt-4">   
 
@@ -120,7 +149,7 @@ exit();
     <label>Description</label><br>
     <textarea name="description" class="form-control" rows="5" cols="40"  required></textarea><br><br>
 
-    <button class="btn btn-success mb-3">
+    <button class="btn btn-success mb-3" name="add_experience" >
 
             <i class="bi bi-plus-circle"></i>
 
@@ -164,12 +193,12 @@ $result = mysqli_query($conn, $sql);
                     <?php while($row = mysqli_fetch_assoc($result)){ ?>
 
                 <tr>
-                    <td><?php echo $row['id']; ?></td>
-                    <td><?php echo $row['job_title']; ?></td>
-                    <td><?php echo $row['company']; ?></td>
-                    <td><?php echo $row['start_year']; ?></td>
-                    <td><?php echo $row['end_year']; ?></td>
-                    <td><?php echo $row['description']; ?></td>
+                        <td><?php echo $row['id']; ?></td>
+                        <td><?php echo htmlspecialchars($row['job_title']); ?></td>
+                        <td><?php echo htmlspecialchars($row['company']); ?></td>
+                        <td><?php echo htmlspecialchars($row['start_year']); ?></td>
+                        <td><?php echo htmlspecialchars($row['end_year']); ?></td>
+                        <td><?php echo htmlspecialchars($row['description']); ?></td>
 
                     <td>
                         <a href="edit-experience.php?id=<?php echo $row['id']; ?>"

@@ -2,6 +2,12 @@
 
 session_start();
 
+if(!isset($_SESSION['user_id'])){
+    header("Location: login.php");
+    exit();
+}
+
+require_once "../includes/auth.php";
 require_once "../includes/db.php";
 
 $sql = "SELECT * FROM profile WHERE id=1";
@@ -168,7 +174,7 @@ style="object-fit:cover;">
 
     <div class="col-md-6 mb-3">
         <label class="form-label">GitHub</label>
-        <input type="text"
+        <input type="url"
                name="github"
                class="form-control"
                value="<?php echo $profile['github']; ?>">
@@ -176,7 +182,7 @@ style="object-fit:cover;">
 
     <div class="col-md-6 mb-3">
         <label class="form-label">LinkedIn</label>
-        <input type="text"
+        <input type="url"
                name="linkedin"
                class="form-control"
                value="<?php echo $profile['linkedin']; ?>">

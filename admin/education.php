@@ -10,43 +10,69 @@ include "../includes/sidebar.php";
 
 
 
-if(isset($_POST['add_education'])){
+if (isset($_POST['add_education'])) {
+
     $degree = trim($_POST['degree']);
     $institute = trim($_POST['institute']);
     $start_year = trim($_POST['start_year']);
     $end_year = trim($_POST['end_year']);
     $descripton = trim($_POST['descripton']);
 
+    $stmt = mysqli_prepare(
+        $conn,
+        "INSERT INTO education
+        (degree, institute, start_year, end_year, descripton)
+        VALUES (?, ?, ?, ?, ?)"
+    );
 
-    $sql = "INSERT INTO education (degree,institute,start_year,end_year,descripton)
-             VALUES ('$degree','$institute','$start_year','$end_year','$descripton')";
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sssss",
+        $degree,
+        $institute,
+        $start_year,
+        $end_year,
+        $descripton
+    );
 
+    if (mysqli_stmt_execute($stmt)) {
 
+        mysqli_stmt_close($stmt);
 
-
-
-    if(mysqli_query($conn, $sql)){
-        header("location:education.php");
+        header("Location: education.php");
         exit();
-    }else{
-        echo "Error" . mysqli_error($conn);
+
+    } else {
+
+        echo "Error: " . mysqli_stmt_error($stmt);
+
     }
-
-
+    
 }
 
 
-if(isset($_GET['delete'])){
+if (isset($_GET['delete'])) {
 
-    $id = $_GET['delete'];
+    $id = (int) $_GET['delete'];
 
-    $sql = "DELETE FROM education WHERE id = '$id'";
+    $stmt = mysqli_prepare(
+        $conn,
+        "DELETE FROM education WHERE id = ?"
+    );
 
-    if(mysqli_query($conn, $sql)){
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+    if (mysqli_stmt_execute($stmt)) {
+
+        mysqli_stmt_close($stmt);
+
         header("Location: education.php");
-exit();
-    }else{
-        echo "Error: " . mysqli_error($conn);
+        exit();
+
+    } else {
+
+        echo "Error: " . mysqli_stmt_error($stmt);
+
     }
 
 }
@@ -145,6 +171,7 @@ $result = mysqli_query($conn, $sql);
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle" border="1" cellpadding="10">
+                    
                     <thead class="table-dark">
                     <tr>
                         <th>id</th>
@@ -162,15 +189,15 @@ $result = mysqli_query($conn, $sql);
                     <tr>
                         <td><?php echo $row['id']; ?></td>
 
-                        <td><?php echo $row['degree']; ?></td>
+                        <td><?php echo htmlspecialchars($row['degree']); ?></td>
 
-                        <td><?php echo $row['institute']; ?></td>
+                        <td><?php echo htmlspecialchars($row['institute']); ?></td>
 
-                        <td><?php echo $row['start_year']; ?></td>
+                        <td><?php echo htmlspecialchars($row['institute']); ?></td>
 
-                        <td><?php echo $row['end_year']; ?></td>
+                        <td><?php echo htmlspecialchars($row['end_year']); ?></td>
 
-                        <td><?php echo $row['descripton']; ?></td>
+                        <td><?php echo htmlspecialchars($row['descripton']); ?></td>
                         
 
                         <td>
@@ -190,13 +217,15 @@ $result = mysqli_query($conn, $sql);
 
                     </tr>
 
+                    <?php } ?>
+
                 </table>
             </div>
         </div>
 
 </div>
 
-    <?php } ?>
+    
 
     <?php
     include "../includes/footer.php";

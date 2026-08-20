@@ -32,6 +32,10 @@
             </li>
 
             <li class="nav-item mb-2">
+                <a href="messages.php" class="nav-link text-white">Messages</a>
+            </li>
+
+            <li class="nav-item mb-2">
                 <a href="logout.php" class="nav-link text-danger">Logout</a>
             </li>
 

@@ -1,6 +1,7 @@
 <?php
 
 
+
 require_once "../includes/auth.php";
 require_once "../includes/db.php";
 
@@ -8,94 +9,180 @@ require_once "../includes/db.php";
 include "../includes/header.php";
 include "../includes/sidebar.php";
 
-$id = $_GET['id'];
 
-$sql = "SELECT * FROM experience WHERE id = '$id'";
-$result = mysqli_query($conn, $sql);
+if (!isset($_GET['id'])) {
 
-$education = mysqli_fetch_assoc($result);
-if(isset($_POST['update_experience'])){
+    header("Location: experience.php");
+    exit();
+
+}
+
+$id = (int) $_GET['id'];
+
+
+// Fetch experience record
+$stmt = mysqli_prepare(
+    $conn,
+    "SELECT * FROM experience WHERE id = ?"
+);
+
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
+
+if (mysqli_num_rows($result) !== 1) {
+
+    mysqli_stmt_close($stmt);
+
+    header("Location: experience.php");
+    exit();
+
+}
+
+$experience = mysqli_fetch_assoc($result);
+
+mysqli_stmt_close($stmt);
+
+
+// Update experience
+if (isset($_POST['update_experience'])) {
 
     $job_title = trim($_POST['job_title']);
     $company = trim($_POST['company']);
     $start_year = trim($_POST['start_year']);
     $end_year = trim($_POST['end_year']);
-    $descripton = trim($_POST['description']);
-
-    $sql = "UPDATE experience SET
-
-    job_title = '$job_title',
-    company = '$company',
-    start_year = '$start_year',
-    end_year = '$end_year',
-    description = '$description'
-    
+    $description = trim($_POST['description']);
 
 
-    WHERE id = '$id'";
+    $stmt = mysqli_prepare(
+        $conn,
+        "UPDATE experience
+         SET job_title = ?,
+             company = ?,
+             start_year = ?,
+             end_year = ?,
+             description = ?
+         WHERE id = ?"
+    );
 
-    if(mysqli_query($conn, $sql)){
-         header("Location: experience.php");
-    exit();
-    }else{
-        echo "Error: " . mysqli_error($conn);
+    mysqli_stmt_bind_param(
+        $stmt,
+        "sssssi",
+        $job_title,
+        $company,
+        $start_year,
+        $end_year,
+        $description,
+        $id
+    );
+
+
+    if (mysqli_stmt_execute($stmt)) {
+
+        mysqli_stmt_close($stmt);
+
+        header("Location: experience.php");
+        exit();
+
+    } else {
+
+        echo "Error: " . mysqli_stmt_error($stmt);
+
     }
-
 }
-
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Experience</title>
+
 </head>
+
 <body>
-     <div class="container-fluid p-4">
+
+<div class="container-fluid p-4">
 
     <h2>Edit Experience Record</h2>
 
     <form action="" method="POST">
 
         <label>Job Title</label><br>
+
         <input type="text"
                name="job_title"
-               value="<?php echo $education['job_title']; ?>"><br><br>
+               value="<?php echo htmlspecialchars($experience['job_title']); ?>"
+               required>
 
-        <label>Institute</label><br>
+        <br><br>
+
+
+        <label>Company</label><br>
+
         <input type="text"
                name="company"
-               value="<?php echo $education['company']; ?>"><br><br>
+               value="<?php echo htmlspecialchars($experience['company']); ?>"
+               required>
 
-          <label>Start_year</label><br>
+        <br><br>
+
+
+        <label>Start Year</label><br>
+
         <input type="number"
                name="start_year"
-               value="<?php echo $education['start_year']; ?>"><br><br>
+               value="<?php echo htmlspecialchars($experience['start_year']); ?>"
+               required>
 
-          <label>End_year</label><br>
+        <br><br>
+
+
+        <label>End Year</label><br>
+
         <input type="number"
                name="end_year"
-               value="<?php echo $education['end_year']; ?>"><br><br>
+               value="<?php echo htmlspecialchars($experience['end_year']); ?>"
+               required>
 
-         <label>Description</label><br>
+        <br><br>
+
+
+        <label>Description</label><br>
+
         <input type="text"
-               name="descripton"
-               value="<?php echo $education['description']; ?>"><br><br>
+               name="description"
+               value="<?php echo htmlspecialchars($experience['description']); ?>"
+               required>
 
-        <button type="submit" name="update_experience">
+        <br><br>
+
+
+        <button type="submit"
+                name="update_experience">
+
             Update Experience
+
         </button>
 
     </form>
 
 </div>
+
+
 <?php
 
 include "../includes/footer.php";
 
 ?>
+
 </body>
 </html>

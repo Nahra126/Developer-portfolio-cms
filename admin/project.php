@@ -1,6 +1,7 @@
 <?php
 
 
+
 require_once "../includes/auth.php";
 require_once "../includes/db.php";
 
@@ -10,46 +11,150 @@ include "../includes/sidebar.php";
 
 
 if(isset($_POST['add_project'])){
+
     $project_name = trim($_POST['project_name']);
     $technologies = trim($_POST['technologies']);
     $description = trim($_POST['description']);
     $github_link = trim($_POST['github_link']);
     $live_demo = trim($_POST['live_demo']);
 
-    $project_image = $_FILES['project_image']['name'];
-    $tmp_name = $_FILES['project_image']['tmp_name'];
-    $folder = "../uploads/projects/" . $project_image;
 
-if(move_uploaded_file($tmp_name, $folder)){
-    echo "Image Uploaded Successfully";;
-}else{
-     echo "Image Upload Failed";
+    // Image validation
+    if(
+        !isset($_FILES['project_image']) ||
+        $_FILES['project_image']['error'] !== UPLOAD_ERR_OK
+    ){
 
-}
+        echo "Please select a project image.";
 
-$sql = "INSERT INTO projects (project_name,technologies,description,github_link,live_demo,project_image)
-        VALUES('$project_name','$technologies','$description','$github_link','$live_demo','$project_image')";
-
-    if(mysqli_query($conn, $sql)){
-        header("Location: project.php");
-        exit();
     }else{
-        echo "Error: " . mysqli_error($conn);
+
+        $allowed_types = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        $file_type = mime_content_type($_FILES['project_image']['tmp_name']);
+
+        if(!in_array($file_type, $allowed_types)){
+
+            echo "Only JPG, PNG and WEBP images are allowed.";
+
+        }else{
+
+            $extension = pathinfo(
+                $_FILES['project_image']['name'],
+                PATHINFO_EXTENSION
+            );
+
+            $project_image = uniqid('project_', true) . '.' . $extension;
+
+            $tmp_name = $_FILES['project_image']['tmp_name'];
+
+            $folder = "../uploads/projects/" . $project_image;
+
+
+            if(move_uploaded_file($tmp_name, $folder)){
+
+                $stmt = mysqli_prepare(
+                    $conn,
+                    "INSERT INTO projects
+                    (project_name, technologies, description, github_link, live_demo, project_image)
+                    VALUES (?, ?, ?, ?, ?, ?)"
+                );
+
+                mysqli_stmt_bind_param(
+                    $stmt,
+                    "ssssss",
+                    $project_name,
+                    $technologies,
+                    $description,
+                    $github_link,
+                    $live_demo,
+                    $project_image
+                );
+
+
+                if(mysqli_stmt_execute($stmt)){
+
+                    mysqli_stmt_close($stmt);
+
+                    header("Location: project.php");
+                    exit();
+
+                }else{
+
+                    echo "Error: " . mysqli_stmt_error($stmt);
+
+                }
+
+            }else{
+
+                echo "Image upload failed.";
+
+            }
+
+        }
+
     }
+
 }
 
 
 if(isset($_GET['delete'])){
 
-    $id = $_GET['delete'];
+    $id = (int) $_GET['delete'];
 
-    $sql = "DELETE FROM projects WHERE id = '$id'";
 
-    if(mysqli_query($conn, $sql)){
+    // Get image name first
+    $stmt = mysqli_prepare(
+        $conn,
+        "SELECT project_image FROM projects WHERE id = ?"
+    );
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+    $project = mysqli_fetch_assoc($result);
+
+    mysqli_stmt_close($stmt);
+
+
+    // Delete database record
+    $stmt = mysqli_prepare(
+        $conn,
+        "DELETE FROM projects WHERE id = ?"
+    );
+
+    mysqli_stmt_bind_param($stmt, "i", $id);
+
+
+    if(mysqli_stmt_execute($stmt)){
+
+        mysqli_stmt_close($stmt);
+
+
+        // Delete image from uploads folder
+        if(!empty($project['project_image'])){
+
+            $image_path = "../uploads/projects/" . $project['project_image'];
+
+            if(file_exists($image_path)){
+                unlink($image_path);
+            }
+
+        }
+
+
         header("Location: project.php");
-exit();
+        exit();
+
     }else{
-        echo "Error: " . mysqli_error($conn);
+
+        echo "Error: " . mysqli_stmt_error($stmt);
+
     }
 
 }
@@ -109,7 +214,7 @@ exit();
     <div class="col-md-6 mb-3">
         <label class="form-label">GitHub</label>
         <input type="text"
-               name="github"
+               name="github_link"
                class="form-control">
             
     </div>
@@ -172,20 +277,19 @@ $result = mysqli_query($conn, $sql);
                         <tr>
                             <td><?php echo $row['id']; ?></td>
 
-                            <td><?php echo $row['project_name']; ?></td>
+                            <td><?php echo htmlspecialchars($row['project_name']); ?></td>
 
-                            <td><?php echo $row['technologies']; ?></td>
+                            <td><?php echo htmlspecialchars($row['technologies']); ?></td>
 
-                            <td><?php echo $row['description']; ?></td>
+                            <td><?php echo htmlspecialchars($row['description']); ?></td>
 
-                            <td><?php echo $row['github_link']; ?></td>
+                            <td><?php echo htmlspecialchars($row['github_link']); ?></td>
 
-                            <td><?php echo $row['live_demo']; ?></td>
+                            <td><?php echo htmlspecialchars($row['live_demo']); ?></td>
+
+                            <td><?php echo htmlspecialchars($row['project_image']); ?></td>
                             
-                            <td><?php echo $row['project_image']; ?></td>
-                            
-                            
-
+                        
                             <td>
                             <a href="edit-project.php?id=<?php echo $row['id']; ?>"
                                 class="btn btn-warning btn-sm">
@@ -201,13 +305,15 @@ $result = mysqli_query($conn, $sql);
 
                         </tr>
 
+                        <?php } ?>
+
                     </table>
                 </div>
             </div>
 
 </div>
 
-    <?php } ?>
+    
 
 
 
